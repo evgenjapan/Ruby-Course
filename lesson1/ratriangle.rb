@@ -1,17 +1,17 @@
 triangle = {}
 for i in 0..2
-  puts "Введите #{i +1}-ю сторону"
+  puts "Введите #{i + 1}-ю сторону"
   triangle[i] = gets.chomp.to_f
 end
 #Проверим на равносторонность и равнобедренность
-if triangle[0]==triangle[1] and triangle[1]==triangle[2]
+if triangle[0] == triangle[1] and triangle[1] == triangle[2]
   is_equilateral = true
-elsif triangle[0]==triangle[1] or triangle[1]==triangle[2] or triangle[0]==triangle[2]
+elsif triangle[0] == triangle[1] or triangle[1] == triangle[2] or triangle[0] == triangle[2]
   is_isosceles = true
 end
 
 triangle.sort
-is_ra = triangle[0]**2+triangle[1]**2==triangle[2]**2
+is_ra = triangle[0] ** 2 + triangle[1] ** 2 == triangle[2] ** 2
 
 if is_equilateral
   puts "Ваш треугольник равносторонний"
