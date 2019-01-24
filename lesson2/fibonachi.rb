@@ -1,10 +1,8 @@
-nums = [1]
-num = 1
-i = 1
-while num < 100
-  nums << num
-  num = nums[i] + nums[i-1]
-  i += 1
+nums = [1,1]
+loop do
+  nextnum = nums[-1] + nums[-2]
+  break if nextnum > 100
+  nums << nextnum
 end
-puts nums
 
+puts nums
