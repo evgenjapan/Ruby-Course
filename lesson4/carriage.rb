@@ -6,4 +6,3 @@ class Carriage
     puts "Создан вагон"
   end
 end
-

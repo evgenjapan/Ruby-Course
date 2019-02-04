@@ -2,27 +2,30 @@ require_relative 'train'
 require_relative 'carriage'
 require_relative 'route'
 require_relative 'station'
-require_relative 'CargoCarriage'
-require_relative 'PassengerCarriage'
-require_relative 'CargoTrain'
-require_relative 'PassengerTrain'
+require_relative 'cargo_carriage'
+require_relative 'passenger_carriage'
+require_relative 'cargo_train'
+require_relative 'passenger_train'
 
 def init_interface
-  puts '1. Создать станцию'
-  puts '2. Создать поезд'
-  puts '3. Создать маршрут'
-  puts '4. Добавить станцию к маршруту'
-  puts '5. Убрать станцию из маршрута'
-  puts '6. Назначить маршрут для поезда'
-  puts '7. Создать вагон'
-  puts '8. Изменить состав вагона'
-  puts '9. Переместить поезд'
-  puts '10. Показать список станций'
-  puts '11. Показать список поездов'
-  puts '12. Показать список поездов на станции'
-  puts 'Для выхода введите любое отличное значение'
-  val = gets.to_i
-  choice(val)
+  loop do
+    puts '1. Создать станцию'
+    puts '2. Создать поезд'
+    puts '3. Создать маршрут'
+    puts '4. Добавить станцию к маршруту'
+    puts '5. Убрать станцию из маршрута'
+    puts '6. Назначить маршрут для поезда'
+    puts '7. Создать вагон'
+    puts '8. Изменить состав вагона'
+    puts '9. Переместить поезд'
+    puts '10. Показать список станций'
+    puts '11. Показать список поездов'
+    puts '12. Показать список поездов на станции'
+    puts 'Для выхода введите "exit"'
+    val = gets.chomp
+    break if val == 'exit'
+    choice(val.to_i)
+  end
 end
 
 def choice(value)
@@ -41,7 +44,6 @@ def choice(value)
   when 12 then show_trains_on_station
   else return
   end
-  init_interface
 end
 
 @stations = []
@@ -55,6 +57,8 @@ def create_station
   @stations << Station.new(name)
 end
 
+ERROR = 'Похоже что-то пошло не так'
+
 def create_train
   puts '1. Пассажирский поезд'
   puts '2. Грузовой поезд'
@@ -63,7 +67,7 @@ def create_train
   serial = gets.chomp
   return @trains << PassengerTrain.new(serial) if type == 1
   return @trains << CargoTrain.new(serial) if type == 2
-  puts 'Похоже что-то пошло не так'
+  puts ERROR
 end
 
 def create_route
@@ -71,27 +75,30 @@ def create_route
   puts 'Введите сначала порядковый номер первой станции, а затем конечной'
   first = gets.to_i - 1
   last = gets.to_i - 1
-  @routes << Route.new(@stations[first], @stations[last])
+  return @routes << Route.new(@stations[first], @stations[last]) if @stations[first] and @stations[last]
+  puts ERROR
 end
 
 def add_station
   puts 'Введите порядковый номер маршрута'
   index_route = gets.to_i - 1
   return puts 'Нет доступных маршрутов' if @routes.size == 0
-  puts 'Нет такого маршрута' unless @routes[index_route]
+  return puts 'Нет такого маршрута' unless @routes[index_route]
   puts 'Введите порядковый номер станции'
   index_station = gets.to_i - 1
-  @routes[index_route].add_intermediate(@stations[index_station])
+  return @routes[index_route].add_intermediate(@stations[index_station]) if @stations[index_station]
+  puts ERROR
 end
 
 def delete_station
   puts 'Введите порядковый номер маршрута'
   index_route = gets.to_i - 1
   return puts 'Нет доступных маршрутов' if @routes.size == 0
-  puts 'Нет такого маршрута' unless @routes[index_route]
+  return puts 'Нет такого маршрута' unless @routes[index_route]
   puts 'Введите порядковый номер станции'
   index_station = gets.to_i - 1
-  @routes[index_route].delete_intermediate(@stations[index_station])
+  return @routes[index_route].delete_intermediate(@stations[index_station]) if @stations[index_station]
+  puts ERROR
 end
 
 def add_route
@@ -99,8 +106,9 @@ def add_route
   index_train = gets.to_i - 1
   index_route = gets.to_i - 1
   return puts 'Нет доступных маршрутов' if @routes.size == 0
-  puts 'Нет такого маршрута' unless @routes[index_route]
-  @trains[index_train].add_route(@routes[index_route]) if @trains[index_train]
+  return puts 'Нет такого маршрута' unless @routes[index_route]
+  return @trains[index_train].add_route(@routes[index_route]) if @trains[index_train]
+  puts ERROR
 end
 
 def create_carriage
@@ -109,7 +117,7 @@ def create_carriage
   type = gets.to_i
   return @carriages << PassengerCarriage.new if type == 2
   return @carriages << CargoCarriage.new if type == 1
-  puts 'Похоже что-то пошло не так'
+  puts ERROR
 end
 
 def train_change
@@ -119,9 +127,24 @@ def train_change
   puts 'Введите сначала порядковый номер вагона, а затем порядковый номер поезда'
   index_carriage = gets.to_i - 1
   index_train = gets.to_i - 1
-  return @trains[index_train].add_carriage(@carriages[index_carriage]) if val == 1
-  return @trains[index_train].remove_carriage(@carriages[index_carriage]) if val == 2
-  puts 'Похоже что-то пошло не так'
+  if @trains[index_train] and @carriages[index_carriage]
+    return @trains[index_train].add_carriage(@carriages[index_carriage]) if val == 1
+    return @trains[index_train].remove_carriage(@carriages[index_carriage]) if val == 2
+  end
+  puts ERROR
+end
+
+def move_train
+  puts 'Введите порядковый номер поезда'
+  index_train = gets.to_i - 1
+  return puts 'Поезд не существует' unless @trains[index_train]
+  return puts 'У поезда не задан маршрут' unless @trains[index_train].route
+  puts '1. Двигаться вперёд'
+  puts '2. Вернуться назад'
+  val = gets.to_i
+  return @trains[index_train].move_forward if val == 1
+  return @trains[index_train].move_back if val == 2
+  puts ERROR
 end
 
 def show_stations
@@ -135,7 +158,8 @@ end
 def show_trains_on_station
   puts 'Введите порядковый номер станции'
   index_station = gets.to_i
-  @station[index_station].show_trains if @stations[index_station]
+  return @station[index_station].show_trains if @stations[index_station]
+  puts ERROR
 end
 
 init_interface

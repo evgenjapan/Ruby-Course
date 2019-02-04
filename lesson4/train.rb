@@ -28,7 +28,7 @@ class Train
 
   def add_carriage(carriage)
     self.stop
-    puts "Поезд остановлен для удаления вагона из состава"
+    puts "Поезд остановлен для добавления вагона в состав"
     if carriage.type == @type
       self.carriages << carriage
       carriage.on_board = true
