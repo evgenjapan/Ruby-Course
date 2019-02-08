@@ -1,4 +1,3 @@
-require_related 'instance_counter'
 class Station
   include InstanceCounter
 
