@@ -2,9 +2,11 @@ class Station
   include InstanceCounter
 
   attr_reader :name, :trains
+  
+  @@stations = {}
 
   def self.all
-    ObjectSpace.each_object(self).to_a
+    @@stations
   end
 
   instances
@@ -12,6 +14,7 @@ class Station
   def initialize(name)
     @name = name
     @trains = []
+    @@stations << self
     register_instance
     puts "Сегодня была открыта станция #{name}"
   end
