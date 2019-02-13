@@ -20,13 +20,13 @@ class Train
     @serial = serial.to_s
     @carriages = []
     @speed = 0
-    validate
+    validate!
     @@trains[@serial] = self
     register_instance
   end
 
   def valid?
-    validate
+    validate!
     true
   rescue
     false
@@ -110,7 +110,7 @@ class Train
   attr_writer :carriages, :speed, :serial, :route, :type
 
   protected
-  def validate
+  def validate!
     raise 'Номер поезда не может быть не задан' if @serial.empty?
     if @serial !~ SERIAL_FORMAT
       raise 'Номер поезда должен соотвествовать формату ***-**, где звездочка это буква или цифра(дефис не обязателен)'

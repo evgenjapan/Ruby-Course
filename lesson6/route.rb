@@ -7,12 +7,12 @@ class Route
     @start_point = start_point
     @finish_point = finish_point
     @stations = [start_point, finish_point]
-    validate
+    validate!
     register_instance
   end
 
   def valid?
-    validate
+    validate!
     true
   rescue
     false
@@ -31,7 +31,7 @@ class Route
     end
 
   protected
-  def validate
+  def validate!
     raise "Первая и конечная станция не могут быть одинаковы" if @start_point == @finish_point
     raise "Вы поезду некуда ехать, уважайте поезд, добавьте станцию" if @stations.size < 2
     raise "Не все объекты в маршруте являются станциями" unless @stations.all? {|station| station.is_a?(Station)}

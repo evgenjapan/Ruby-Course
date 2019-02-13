@@ -14,13 +14,13 @@ class Station
   def initialize(name)
     @name = name.to_s
     @trains = []
-    validate
+    validate!
     @@stations << self
     register_instance
   end
 
   def valid?
-    validate
+    validate!
     true
   rescue
     false
@@ -48,7 +48,7 @@ class Station
   end
   private
   attr_writer :name, :trains
-  def validate
+  def validate!
     raise 'Название станции должно быть больше 2 символов' if @name.size < 3
   end
 end
