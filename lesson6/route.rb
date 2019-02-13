@@ -29,15 +29,11 @@ class Route
   def show_route
     @stations.each {|station| puts station.name}
     end
-  private
-  attr_writer :stations
 
   protected
   def validate
     raise "Первая и конечная станция не могут быть одинаковы" if @start_point == @finish_point
     raise "Вы поезду некуда ехать, уважайте поезд, добавьте станцию" if @stations.size < 2
-    @stations.each_with_index do |station, index|
-       raise "Станция станция с индексом #{index} не является станцией" unless station.is_a?(Station)
-    end
+    raise "Не все объекты в маршруте являются станциями" unless @stations.all? {|station| station.is_a?(Station)}
   end
 end
