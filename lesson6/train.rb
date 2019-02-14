@@ -111,6 +111,7 @@ class Train
 
   protected
   def validate!
+    raise 'Номер поезда должен быть строкой' unless @serial.is_a? String
     raise 'Номер поезда не может быть не задан' if @serial.empty?
     if @serial !~ SERIAL_FORMAT
       raise 'Номер поезда должен соотвествовать формату ***-**, где звездочка это буква или цифра(дефис не обязателен)'
