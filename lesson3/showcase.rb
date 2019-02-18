@@ -1,6 +1,6 @@
 require_relative 'oop'
 
-puts "Пример работы"
+puts 'Пример работы'
 
 station_k = Station.new('Крюково')
 station_s = Station.new('Саларьево')
@@ -20,7 +20,7 @@ train_a.add_route(route1)
 train_g.add_route(route1)
 
 station_k.show_trains
-station_k.get_trains_by_type
+station_k.trains_by_type
 station_k.move_train(train_g)
 
 train_g.move_back

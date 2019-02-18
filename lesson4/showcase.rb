@@ -3,7 +3,7 @@ require_relative 'carriage'
 require_relative 'route'
 require_relative 'station'
 
-puts "Пример работы"
+puts 'Пример работы'
 
 station_k = Station.new('Крюково')
 station_s = Station.new('Саларьево')
@@ -12,7 +12,6 @@ station_r = Station.new('Речной вокзал')
 train_a = CargoTrain.new('Атаман')
 train_g = PassengerTrain.new('Груз200')
 
-carriage_a = CargoCarriage.new
 carriage_b = PassengerCarriage.new
 
 route1 = Route.new(station_k, station_r)

@@ -8,7 +8,7 @@ class Train
   attr_reader :carriages, :speed, :serial, :route, :type
   attr_accessor :station
 
-  SERIAL_FORMAT = /^[\w\d]{3}-?[\w\d]{2}$/
+  SERIAL_FORMAT = /^[\w\d]{3}-?[\w\d]{2}$/.freeze
 
   @@trains = {}
 
@@ -28,18 +28,16 @@ class Train
   def valid?
     validate!
     true
-  rescue
+  rescue StandardError
     false
   end
 
   def moving?
-    @speed == 0
+    @speed.zero?
   end
 
   def stop
-    if self.moving?
-      @speed = 0
-    end
+    @speed = 0 if moving?
   end
 
   def increase_speed(num = 10)
@@ -47,9 +45,9 @@ class Train
   end
 
   def add_carriage(carriage)
-    self.stop
+    stop
     if carriage.type == @type
-      self.carriages << carriage
+      carriages << carriage
       carriage.on_board = true
     else
       false
@@ -57,7 +55,7 @@ class Train
   end
 
   def remove_carriage(carriage)
-    self.stop
+    stop
     if @carriages.include?(carriage)
       @carriages.delete(carriage)
       return carriage.on_board = false
@@ -83,7 +81,7 @@ class Train
 
   def move_back
     i = @route.stations.index(@station)
-    if i == 0
+    if i.zero?
       false
     else
       @station = @route.stations[i - 1]
@@ -93,36 +91,38 @@ class Train
 
   def each_carriage(&block)
     if block.arity == 2
-      @carriages.each_with_index {|carriage, index| yield index, carriage}
+      @carriages.each_with_index { |carriage, index| yield index, carriage }
     else
-      @carriages.each {|carriage| yield carriage}
+      @carriages.each { |carriage| yield carriage }
     end
   end
 
   def previous_station
     return false unless @route
+
     i = @route.stations.index(@station)
-    return false if i == 0
+    return false if i.zero?
+
     @route.stations[i - 1]
   end
 
   def next_station
     return false unless @route
+
     i = @route.stations.index(@station)
     last_station = @route.stations.size - 1
     return false if i == last_station
-    @route.stations[i+1]
+
+    @route.stations[i + 1]
   end
 
-  private
+  protected
+
   attr_writer :carriages, :speed, :serial, :route, :type
 
-  protected
   def validate!
     raise 'Номер поезда должен быть строкой' unless @serial.is_a? String
     raise 'Номер поезда не может быть не задан' if @serial.empty?
-    if @serial !~ SERIAL_FORMAT
-      raise 'Номер поезда должен соотвествовать формату ***-**, где звездочка это буква или цифра(дефис не обязателен)'
-    end
+    raise 'Формат номера: ***-**' if @serial !~ SERIAL_FORMAT
   end
 end

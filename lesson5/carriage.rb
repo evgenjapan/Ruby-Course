@@ -6,6 +6,6 @@ class Carriage
 
   def initialize
     @on_board = false
-    puts "Создан вагон"
+    puts 'Создан вагон'
   end
 end

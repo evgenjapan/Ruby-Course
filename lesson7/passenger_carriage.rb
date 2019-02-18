@@ -9,7 +9,8 @@ class PassengerCarriage < Carriage
   end
 
   def take_seat
-    raise 'Свободных мест нет' if @free_seats == 0
+    raise 'Свободных мест нет' if @free_seats.zero?
+
     @free_seats -= 1
     @taken_seats += 1
   end
@@ -17,7 +18,7 @@ class PassengerCarriage < Carriage
   def valid?
     validate!
     true
-  rescue
+  rescue StandardError
     false
   end
 
@@ -25,8 +26,7 @@ class PassengerCarriage < Carriage
 
   def validate!
     raise 'Число мест должно быть числом' unless @free_seats.is_a? Integer
-    raise 'В поезде не может быть отрицательное кол-во свободных мест' if @free_seats < 0
-    raise 'В поезде не может быть отрицательное кол-во занятых мест' if @taken_seats < 0
+    raise 'Неверное кол-во свободных мест' if @free_seats < 0
+    raise 'Неверное кол-во занятых мест' if @taken_seats < 0
   end
-
 end

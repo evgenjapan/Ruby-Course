@@ -14,7 +14,7 @@ class Route
   def valid?
     validate!
     true
-  rescue
+  rescue StandardError
     false
   end
 
@@ -27,13 +27,14 @@ class Route
   end
 
   def show_route
-    @stations.each {|station| puts station.name}
-    end
+    @stations.each { |station| puts station.name }
+  end
 
   protected
+
   def validate!
-    raise "Первая и конечная станция не могут быть одинаковы" if @start_point == @finish_point
-    raise "Вы поезду некуда ехать, уважайте поезд, добавьте станцию" if @stations.size < 2
-    raise "Не все объекты в маршруте являются станциями" unless @stations.all? {|station| station.is_a?(Station)}
+    raise 'Станции совпадают' if @start_point == @finish_point
+    raise 'Некуда ехать' if @stations.size < 2
+    raise 'TypeError' unless @stations.all? { |station| station.is_a?(Station) }
   end
 end

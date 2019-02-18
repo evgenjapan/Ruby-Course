@@ -20,9 +20,11 @@ class Route
   end
 
   def show_route
-    puts "Ключевые точки в пути:"
-    @stations.each {|station| puts station.name}
-    end
+    puts 'Ключевые точки в пути:'
+    @stations.each { |station| puts station.name }
+  end
+
   private
+
   attr_writer :stations
 end

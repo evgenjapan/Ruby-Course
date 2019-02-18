@@ -3,6 +3,6 @@ class Carriage
   attr_accessor :on_board
   def initialize
     @on_board = false
-    puts "Создан вагон"
+    puts 'Создан вагон'
   end
 end

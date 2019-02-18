@@ -15,21 +15,21 @@ class Station
 
   def show_trains
     puts "Поезда на станции #{@name}:"
-    @trains.each {|train| puts "Поезд с серийным номером #{train.serial}" }
+    @trains.each { |train| puts "Поезд с серийным номером #{train.serial}" }
   end
 
-  def get_trains_by_type
+  def trains_by_type
     freight = 0
     passenger = 0
-    @trains.each {|train| train.is_freight ? freight += 1 : passenger += 1 }
-    puts "Пассажирских #{passenger} Грузовых #{freight} - поездов на станции #{@name}"
-    types = {freights: freight, passengers: passenger}
+    @trains.each { |train| train.is_freight ? freight += 1 : passenger += 1 }
+    puts "Пассажирских #{passenger} Грузовых #{freight}"
+    { freights: freight, passengers: passenger }
   end
 
   def move_train(train)
     puts "Поезд с серийным номером #{train.serial} покидает станцию #{@name}"
     @trains.delete(train)
-    train.move_forward  if train.route
+    train.move_forward if train.route
   end
 end
 
@@ -52,21 +52,20 @@ class Route
   end
 
   def show_route
-    puts "Ключевые точки в пути:"
-    @stations.each {|station| puts station.name}
+    puts 'Ключевые точки в пути:'
+    @stations.each { |station| puts station.name }
   end
 end
 
 class Train
   attr_accessor :carriages, :speed, :serial, :is_freight, :route, :station
 
-  def initialize(speed = 0, serial, is_freight, carriages)
+  def initialize(serial, is_freight, carriages)
     @serial = serial
     @is_freight = is_freight
     @carriages = carriages
-    @speed = speed
+    @speed = 0
     puts "Сегодня был построен и выпущен поезд #{serial}"
-
   end
 
   def stop
@@ -80,14 +79,14 @@ class Train
   end
 
   def add_carriage
-    self.stop
-    puts "Поезд остановлен для добавления вагона в состав"
+    stop
+    puts 'Поезд остановлен для добавления вагона в состав'
     @carriages += 1
   end
 
   def remove_carriage
-    self.stop
-    puts "Поезд остановлен для удаления вагона из состава"
+    stop
+    puts 'Поезд остановлен для удаления вагона из состава'
     @carriages -= 1
   end
 
@@ -100,7 +99,7 @@ class Train
   def move_forward
     i = @route.stations.index(@station)
     if i == (@route.stations.size - 1)
-      puts "Поезд уже на конечной станции"
+      puts 'Поезд уже на конечной станции'
     else
       puts "Поезд перемещён к следующей станции #{@station.name}"
       @station = @route.stations[i + 1]
@@ -110,8 +109,8 @@ class Train
 
   def move_back
     i = @route.stations.index(@station)
-    if i == 0
-      puts "Поезд на первой станции"
+    if i.zero?
+      puts 'Поезд на первой станции'
     else
       puts "Поезд перемещён к предыдущей станции #{@station.name}"
       @station = @route.stations[i - 1]
@@ -123,13 +122,13 @@ class Train
     if @route
       i = @route.stations.index(@station)
       if i > 0
-        puts "Предыдущая станция на пути #{@serial} #{@route.stations[i - 1].name}"
+        puts "Предыдущая станция #{@serial} #{@route.stations[i - 1].name}"
         @route.stations[i - 1]
       else
-        puts "Поезд находится на самой первой станции"
+        puts 'Поезд находится на самой первой станции'
       end
     else
-      puts "У поезда не задан маршрут"
+      puts 'У поезда не задан маршрут'
     end
   end
 
@@ -137,13 +136,13 @@ class Train
     if @route
       i = @route.stations.index(@station)
       if i < (@route.stations.size - 1)
-        puts "Следующая станция на пути #{@serial} #{@route.stations[i + 1].name}"
+        puts "Следующая станция #{@serial} #{@route.stations[i + 1].name}"
         @route.stations[i + 1]
       else
-        puts "Поезд находится на последней станции"
+        puts 'Поезд находится на последней станции'
       end
     else
-      puts "У поезда не задан маршрут"
+      puts 'У поезда не задан маршрут'
     end
   end
 end

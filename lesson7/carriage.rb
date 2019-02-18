@@ -4,7 +4,7 @@ class Carriage
   attr_reader :type
   attr_accessor :on_board
 
-  def initialize(extra)
+  def initialize(_extra)
     @on_board = false
   end
 end

@@ -12,7 +12,8 @@ class CargoCarriage < Carriage
   def take_volume(volume)
     raise 'Занятый объем должен быть числом' unless volume.is_a? Integer
     raise 'Минимальный объем багажного места равен единице' if volume <= 0
-    raise 'В вагоне не осталось столько свободного места' if volume > @free_volume
+    raise 'В вагоне не осталось свободного места' if volume > @free_volume
+
     @free_volume -= volume
     @taken_volume += volume
   end
@@ -20,7 +21,7 @@ class CargoCarriage < Carriage
   def valid?
     validate!
     true
-  rescue
+  rescue StandardError
     false
   end
 

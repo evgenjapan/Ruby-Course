@@ -26,6 +26,7 @@ def init_interface
     puts 'Для выхода введите "exit"'
     val = gets.chomp
     break if val == 'exit'
+
     choice(val.to_i)
   end
 end
@@ -44,7 +45,6 @@ def choice(value)
   when 10 then show_stations
   when 11 then show_trains
   when 12 then show_trains_on_station
-  else return
   end
 end
 
@@ -54,15 +54,15 @@ end
 @carriages = []
 
 def create_station
-  puts "Название станции"
+  puts 'Название станции'
   name = gets.chomp
   @stations << Station.new(name)
-rescue => e
+rescue StandardError => e
   puts e.message
   retry
 end
 
-ERROR = 'Похоже что-то пошло не так'
+ERROR = 'Похоже что-то пошло не так'.freeze
 
 def create_train
   puts 'Введите название поезда'
@@ -70,23 +70,25 @@ def create_train
   puts '1. Пассажирский поезд'
   puts '2. Грузовой поезд'
   type = gets.to_i
-  raise '1 или 2, всё ведь написано' if type != 1 and type != 2
+  raise '1 или 2, всё ведь написано' if (type != 1) && (type != 2)
+
   case type
   when 1 then @trains << PassengerTrain.new(serial)
   when 2 then @trains << CargoTrain.new(serial)
   else create_train
   end
-rescue => e
+rescue StandardError => e
   puts e.message
 end
 
 def create_route
   return puts 'Слишком мало станций, создайте еще' if @stations.size < 2
+
   puts 'Введите сначала порядковый номер первой станции, а затем конечной'
   first = gets.to_i - 1
   last = gets.to_i - 1
-  return @routes << Route.new(@stations[first], @stations[last]) if @stations[first] and @stations[last]
-rescue => e
+  return @routes << Route.new(@stations[first], @stations[last]) if @stations[first] && @stations[last]
+rescue StandardError => e
   puts e.message
   retry
 end
@@ -94,22 +96,26 @@ end
 def add_station
   puts 'Введите порядковый номер маршрута'
   index_route = gets.to_i - 1
-  return puts 'Нет доступных маршрутов' if @routes.size == 0
+  return puts 'Нет доступных маршрутов' if @routes.empty?
   return puts 'Нет такого маршрута' unless @routes[index_route]
+
   puts 'Введите порядковый номер станции'
   index_station = gets.to_i - 1
   return @routes[index_route].add_intermediate(@stations[index_station]) if @stations[index_station]
+
   puts ERROR
 end
 
 def delete_station
   puts 'Введите порядковый номер маршрута'
   index_route = gets.to_i - 1
-  return puts 'Нет доступных маршрутов' if @routes.size == 0
+  return puts 'Нет доступных маршрутов' if @routes.empty?
   return puts 'Нет такого маршрута' unless @routes[index_route]
+
   puts 'Введите порядковый номер станции'
   index_station = gets.to_i - 1
   return @routes[index_route].delete_intermediate(@stations[index_station]) if @stations[index_station]
+
   puts ERROR
 end
 
@@ -117,9 +123,10 @@ def add_route
   puts 'Введите порядковый номер поезда, а затем порядковый номер маршрута'
   index_train = gets.to_i - 1
   index_route = gets.to_i - 1
-  return puts 'Нет доступных маршрутов' if @routes.size == 0
+  return puts 'Нет доступных маршрутов' if @routes.empty?
   return puts 'Нет такого маршрута' unless @routes[index_route]
   return @trains[index_train].add_route(@routes[index_route]) if @trains[index_train]
+
   puts ERROR
 end
 
@@ -129,6 +136,7 @@ def create_carriage
   type = gets.to_i
   return @carriages << PassengerCarriage.new if type == 2
   return @carriages << CargoCarriage.new if type == 1
+
   puts ERROR
 end
 
@@ -139,7 +147,7 @@ def train_change
   puts 'Введите сначала порядковый номер вагона, а затем порядковый номер поезда'
   index_carriage = gets.to_i - 1
   index_train = gets.to_i - 1
-  if @trains[index_train] and @carriages[index_carriage]
+  if @trains[index_train] && @carriages[index_carriage]
     return @trains[index_train].add_carriage(@carriages[index_carriage]) if val == 1
     return @trains[index_train].remove_carriage(@carriages[index_carriage]) if val == 2
   end
@@ -151,26 +159,29 @@ def move_train
   index_train = gets.to_i - 1
   return puts 'Поезд не существует' unless @trains[index_train]
   return puts 'У поезда не задан маршрут' unless @trains[index_train].route
+
   puts '1. Двигаться вперёд'
   puts '2. Вернуться назад'
   val = gets.to_i
   return @trains[index_train].move_forward if val == 1
   return @trains[index_train].move_back if val == 2
+
   puts ERROR
 end
 
 def show_stations
-  @stations.each_with_index {|station, i| puts "#{station.name} Номер: #{i + 1}" }
+  @stations.each_with_index { |station, i| puts "#{station.name} Номер: #{i + 1}" }
 end
 
 def show_trains
-  @trains.each_with_index {|train, i| puts "#{train.serial} Номер: #{i + 1}" }
+  @trains.each_with_index { |train, i| puts "#{train.serial} Номер: #{i + 1}" }
 end
 
 def show_trains_on_station
   puts 'Введите порядковый номер станции'
   index_station = gets.to_i
   return @station[index_station].show_trains if @stations[index_station]
+
   puts ERROR
 end
 

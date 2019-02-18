@@ -22,7 +22,7 @@ class Station
   def valid?
     validate!
     true
-  rescue
+  rescue StandardError
     false
   end
 
@@ -32,21 +32,23 @@ class Station
   end
 
   def show_trains
-    @trains.each {|train| puts train.serial }
+    @trains.each { |train| puts train.serial }
   end
 
-  def get_trains_by_type
+  def trains_by_type
     cargo = 0
     passenger = 0
-    @trains.each {|train| train.type == :cargo ? cargo += 1 : passenger += 1 }
-    {cargos: cargo, passengers: passenger}
+    @trains.each { |train| train.type == :cargo ? cargo += 1 : passenger += 1 }
+    { cargos: cargo, passengers: passenger }
   end
 
   def move_train(train)
     @trains.delete(train)
-    train.move_forward  if train.route
+    train.move_forward if train.route
   end
+
   private
+
   attr_writer :name, :trains
   def validate!
     raise 'Название станции должно быть больше 2 символов' if @name.size < 3

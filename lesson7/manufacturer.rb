@@ -1,9 +1,9 @@
 module Manufacturer
-  def set_manufacturer(name)
-    self.manufacturer = name
+  def manufacturer=(name)
+    self.manufacturer = name.capitalize
   end
 
   def manufacturer
-    self.manufacturer
+    manufacturer
   end
 end

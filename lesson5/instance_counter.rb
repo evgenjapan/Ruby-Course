@@ -8,7 +8,7 @@ module InstanceCounter
     attr_writer :instances
 
     def instances
-      @instances ||= 0 #unless @instances
+      @instances ||= 0 # unless @instances
     end
   end
 
@@ -16,7 +16,7 @@ module InstanceCounter
     private
 
     def register_instance
-      self.class.instances ||= 0 #unless self.class.instances
+      self.class.instances ||= 0 # unless self.class.instances
       self.class.instances += 1
     end
   end
