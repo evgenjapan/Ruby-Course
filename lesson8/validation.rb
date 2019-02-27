@@ -9,13 +9,14 @@ module Validation
 
     def validate(name, type, attr = nil)
       self.to_validate = [] unless to_validate
+      if type == :type
+        raise "Invalid type for #{name}" unless attr.is_a? Class
+      end
       to_validate << { name: name, type: type, attr: attr }
     end
   end
 
   module InstanceMethods
-    TYPES = %i[presence format type].freeze
-
     def valid?
       validate!
       true
@@ -31,17 +32,12 @@ module Validation
         variable = instance_variable_get("@#{name}".to_sym)
         type = validation[:type]
         extra_attr = validation[:attr]
-        raise "Invalid validation type for #{name}" unless TYPES.include? type
-
-        case type
-        when :presence then presence_validator(name, variable)
-        when :format then format_validator(name, variable, extra_attr)
-        when :type then type_validator(name, variable, extra_attr)
-        end
+        method_name = "#{type}_validator".to_sym
+        send(method_name, name, variable, extra_attr)
       end
     end
 
-    def presence_validator(name, variable)
+    def presence_validator(name, variable, useless)
       raise "Variable #{name} is empty" if variable.nil? || variable == ''
 
       true
@@ -54,7 +50,6 @@ module Validation
     end
 
     def type_validator(name, variable, type)
-      raise 'Invalid type' unless type.is_a? Class
       raise "Variable #{name} has invalid type" unless variable.is_a? type
 
       true

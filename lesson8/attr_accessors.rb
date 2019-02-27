@@ -1,4 +1,4 @@
-module MyAttrAccessors
+module Accessors
   def attr_accessor_with_history(*names)
     names.each do |name|
       var_name = "@#{name}".to_sym
@@ -36,7 +36,7 @@ module MyAttrAccessors
 end
 
 class Test
-  extend MyAttrAccessors
+  extend Accessors
   attr_accessor_with_history :a, :b
   strong_attr_accessor :a, String
   strong_attr_accessor :b, Integer
